@@ -2,6 +2,8 @@ const path = require("path");
 
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
+const knex = require("./db/connection");
+
 const express = require("express");
 const cors = require("cors");
 
@@ -11,8 +13,10 @@ const reservationsRouter = require("./reservations/reservations.router");
 
 const app = express();
 
+app.set("db", knex);
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded());
 
 app.use("/reservations", reservationsRouter);
 
