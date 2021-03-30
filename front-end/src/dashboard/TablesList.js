@@ -5,7 +5,7 @@ const TablesList = ({tables, handleFinish}) => {
         return (
         <div className="row">
             {tables.map((table)=>(
-              <div className="col-sm-6">
+              <div className="col-sm-6" key={table.table_id}>
                 <div className="card text-white bg-dark mb-3">
                   <div className="card-body">
                     <h5 className="card-title">{table.table_name}</h5>
@@ -28,7 +28,7 @@ const TablesList = ({tables, handleFinish}) => {
         )
     } else {
         return (
-            <div class="alert alert-warning" role="alert">
+            <div className="alert alert-warning" role="alert">
                 There are no tables saved
             </div>
         )

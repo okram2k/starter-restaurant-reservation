@@ -95,7 +95,7 @@ export async function readReservation(reservationId, signal) {
 //updates a single reservation
 
 export async function updateReservation(updatedReservation, signal) {
-  const url = `${API_BASE_URL}/reservations/${updatedReservation.id}`;
+  const url = `${API_BASE_URL}/reservations/${updatedReservation.reservation_id}`;
   const options = {
     method: "PUT",
     headers,

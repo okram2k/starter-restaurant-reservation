@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { searchByPhoneNumber } from "../utils/api";
-import ErrorAlert from "../layout/ErrorAlert";
+//import ErrorAlert from "../layout/ErrorAlert";
 import ReservationList from "../layout/ReservationList"
 
 /**
@@ -11,7 +11,7 @@ import ReservationList from "../layout/ReservationList"
  */
 function Search() {
   const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  //const [reservationsError, setReservationsError] = useState(null);
   const initialFormState = {
     mobile_phone: "xxx-xxx-xxxx",
   };
@@ -75,7 +75,7 @@ function Search() {
       <div>
         <ReservationList reservations={reservations} />
       </div>
-      <ErrorAlert error={reservationsError} />
+      
     </main>
   );
 }

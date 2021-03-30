@@ -10,7 +10,10 @@
   "reservation_date",
   "reservation_time",
   "people",
-  "status"
+  "status",
+  "reservation_id",
+  "created_at",
+  "updated_at"
 ];
 
 function hasOnlyValidProperties(req, res, next) {
@@ -26,6 +29,20 @@ function hasOnlyValidProperties(req, res, next) {
       message: `Invalid field(s): ${invalidFields.join(", ")}`,
     });
   }
+  next();
+}
+
+function dataValidation(req,res,next){
+  const data = {} = req.body;
+  //console.log(data);
+  let isDate = new Date(data.reservation_date);
+  let compareDate = new Date();
+
+  const error = {status: 400, message: "Invalid Reservation Data"}
+  if (data.people <=0) return next(error);
+  if (isDate < compareDate) return next(error);
+  if (isDate.getUTCDay() === 2) return next(error);
+  if (data.reservation_time < "10:30" || data.reservation_time > "21:30") return next(error);
   next();
 }
 
@@ -125,8 +142,8 @@ async function statusUpdate(req, res, next) {
 
 
 module.exports = {
-  create: [hasOnlyValidProperties, create],
-  update: [hasOnlyValidProperties, reservationExists, update],
+  create: [hasOnlyValidProperties, dataValidation, create],
+  update: [hasOnlyValidProperties, dataValidation, reservationExists, update],
   statusUpdate: [hasOnlyValidProperties, reservationExists, statusUpdate],
   destroy: [reservationExists, destroy],
   search: [search],

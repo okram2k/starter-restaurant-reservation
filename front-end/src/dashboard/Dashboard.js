@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { readByDate, listTables, freeTable, statusUpdate } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import { Link, useParams, useHistory } from "react-router-dom";
-import { today, previous, next } from "../utils/date-time";
+import { Link, useParams } from "react-router-dom";
+import { previous, next } from "../utils/date-time";
 import ReservationList from "../layout/ReservationList"
 import TablesList from "./TablesList"
 
@@ -17,8 +17,6 @@ function Dashboard({ date }) {
   if (params.date){
     date = params.date;
   }
-  console.log(params.date, date)
-  let isDate = new Date(date);
   const [reservations, setReservations] = useState([]);
   const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
@@ -42,14 +40,12 @@ function Dashboard({ date }) {
   const handleFinish = async ({ target }) => {
     const abortController = new AbortController();
     const value=target.value;
-    console.log(value);
     const result = window.confirm(`Is this table ready to seat new guests? This cannot be undone.`);
     if (result) {
       async function deleteData() {
          try {
-          const activeTable = tables.filter((table) => table.table_id == value)
+          const activeTable = tables.filter((table) => table.table_id === value)
           await freeTable(value);
-          console.log(activeTable[0].reservation_id);
           await statusUpdate(activeTable[0].reservation_id, {status: "Finished"}, abortController.signal);
           const output = await listTables();
           const output2 = await readByDate(date)
@@ -68,9 +64,6 @@ function Dashboard({ date }) {
     deleteData();
     }
   };
-  //console.log(tables);
-    
-    //console.log(output, date);
   return (
     <main>
       <h1>Dashboard</h1>

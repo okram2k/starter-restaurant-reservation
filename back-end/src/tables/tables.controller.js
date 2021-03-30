@@ -71,9 +71,12 @@ async function update(req, res, next) {
 }
 
 async function seat(req, res, next) {
+  
   const {
     table: { table_id: tableId, ...table },
   } = res.locals;
+  const error = { status: 400, message: `Table occupied.` };
+  if (table.status === "Occupied") return next(error);
   const knexInstance = req.app.get("db");
   
   const updatedTable = { ...table, ...req.body, status: "Occupied" };
@@ -92,6 +95,8 @@ async function unseat(req, res, next) {
   const {
     table: { table_id: tableId, ...table },
   } = res.locals;
+  const error = { status: 400, message: `Table not occupied.` };
+  if (table.status !== "Occupied") return next(error);
   const knexInstance = req.app.get("db");
   
   const updatedTable = { ...table, status: "Free" };

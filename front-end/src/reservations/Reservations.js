@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useHistory } from "react-router-dom";
-import { createReservation } from "../utils/api";
+import { useParams, useHistory } from "react-router-dom";
+import { createReservation, readReservation, updateReservation } from "../utils/api";
 import ReservationError from "./ReservationError"
 import ReserveForm from "./ReserveForm"
 
@@ -11,6 +11,8 @@ import ReserveForm from "./ReserveForm"
  * @returns {JSX.Element}
  */
 function Reservations({ date }) {
+  const params = useParams();
+  const reservation_id = params.reservation_id;
   const initialFormState = {
     first_name: " ",
     last_name: " ",
@@ -19,19 +21,47 @@ function Reservations({ date }) {
     reservation_time: "10:30:00",
     people: 1
   };
+
   let errorCodes = [0,0,0];
   let errorMessages = ["Must select a future date", "Restaraunt is closed on Tuesdays", "Must select a time between 10:30AM - 9:30PM"]
   const [formData, setFormData] = useState({ ...initialFormState });
   const [errorList, setErrorList] = useState([]);
+  useEffect(() => {
+    if (reservation_id){
+    const abortController = new AbortController();
+    async function loadData() {
+        try {
+        const output1 = await readReservation( reservation_id, abortController.signal);
+        setFormData(output1);
+        //filter out any tables that aren't free when we set the tables array.
+        
+      } catch (error) {
+        if (error.name === "AbortError") {
+          // Ignore `AbortError`
+          console.log("Aborted");
+      } else {
+          throw error;
+      }
+    }
+  }
+  loadData();
+}
+});
   const abortController = new AbortController();
   const history = useHistory();
   const handleSubmit = (event) => {
     event.preventDefault();
-    
+    //check there are no outstanding errors before we attempt to send data
+    if (errorList.length === 0) {
     console.log("Submitted:", formData);
     async function updateData() {
        try {
-        await createReservation(formData, abortController.signal);
+         //if reservaiton_id isn't undefined we are updating a reservation, if it's undefined we are creating a new reservation
+        if (reservation_id){
+          await updateReservation(formData, abortController.signal);
+        } else {
+          await createReservation(formData, abortController.signal);
+        }
         console.log("updated");
         history.push(`/dashboard/${formData.reservation_date}`);
       } catch (error) {
@@ -48,14 +78,15 @@ function Reservations({ date }) {
       console.log("post cleanup");
       abortController.abort();
     }
+  }
   };
   const handleChange = ({ target }) => {
     let value = target.value;
 
-    if (target.name == "people" && target.value <= 0){
+    if (target.name === "people" && target.value <= 0){
       value = 1;
     }
-    if (target.name == "reservation_date"){
+    if (target.name === "reservation_date"){
       let isDate = new Date(value);
       let compareDate = new Date(date);
       if (isDate < compareDate){
@@ -64,14 +95,13 @@ function Reservations({ date }) {
           errorCodes[0] = 0;
         
       }
-      console.log(errorList);
-      if (isDate.getUTCDay() == 2){
+      if (isDate.getUTCDay() === 2){
         errorCodes[1] = 1;
       } else {
         errorCodes[1] = 0;
       }
     }
-    if (target.name == "reservation_time"){
+    if (target.name === "reservation_time"){
       if (value >= "10:30" && value <= "21:30"){
         errorCodes[2] = 0;
       } else {
@@ -80,7 +110,7 @@ function Reservations({ date }) {
     }
     let errList = [];
     errorCodes.forEach((code, index) =>{
-      if (code == 1){
+      if (code === 1){
         errList.push(errorMessages[index]);
       }
     });
@@ -90,8 +120,6 @@ function Reservations({ date }) {
       [target.name]: value,
     });
   };
-
-
 
 
   return (

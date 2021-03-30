@@ -38,7 +38,7 @@ function Seat() {
     }
   }
   loadData();
-}, []);
+});
 const abortController = new AbortController();
 const history = useHistory();
 const handleSubmit = (event) => {
@@ -70,8 +70,8 @@ const handleSubmit = (event) => {
 };
 const handleChange = ({ target }) => {
   let value = target.value;
-  let matchedTable = tables.filter((table) => table.table_id == Number(value));
-  if (value == "x"){
+  let matchedTable = tables.filter((table) => table.table_id === Number(value));
+  if (value === "x"){
     setSeatingError({message: "You must select a table"});
   } else {
   if (reservation.people > matchedTable[0].capacity){

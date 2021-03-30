@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams, useHistory } from "react-router-dom";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { createTable } from "../utils/api";
 import TablesForm from "./TablesForm"
 
@@ -45,7 +45,7 @@ function Tables({ date }) {
   const handleChange = ({ target }) => {
     let value = target.value;
 
-    if (target.name == "capacity" && target.value <= 0){
+    if (target.name === "capacity" && target.value <= 0){
       value = 1;
     }
     setFormData({
