@@ -5,22 +5,23 @@
  */
 
 const router = require("express").Router();
-const controller = require("./reservations.controller");
+const controller = require("./tables.controller");
 const methodNotAllowed = require("../errors/methodNotAllowed");
+
+
 
 router.route("/")
     .get(controller.list)
     .post(controller.create)
     .all(methodNotAllowed);
-router.route("/byDate")
-    .get(controller.listByDate)
-    .all(methodNotAllowed);
-router.route("/:reservationId")
+router.route("/:tablesId")
     .get(controller.read)
     .put(controller.update)
     .delete(controller.destroy)
     .all(methodNotAllowed);
-router.route("/:reservationId/status")
-    .put(controller.statusUpdate)
+router.route("/:tablesId/seat")
+    .put(controller.seat)
+    .delete(controller.unseat)
     .all(methodNotAllowed);
+
 module.exports = router;

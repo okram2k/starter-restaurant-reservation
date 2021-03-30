@@ -123,3 +123,81 @@ export async function readByDate(reservation_date, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+
+//update a reservation's status:
+
+export async function statusUpdate(reservationId, status, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservationId}/status`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(status),
+    signal,
+  };
+  return await fetchJson(url, options)
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+}
+
+
+//list all tables
+
+export async function listTables(signal) {
+  const url = new URL(`${API_BASE_URL}/tables/`);
+  return await fetchJson(url, { headers, signal }, [])
+}
+
+
+//add a table
+
+export async function createTable(newTable, signal) {
+  const url = `${API_BASE_URL}/tables/`;
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify(newTable),
+    signal,
+  };
+  console.log("post attempt:", url, options);
+  return await fetchJson(url, options);
+}
+
+//update a table
+
+export async function updateTable(updatedTable, signal) {
+  const url = `${API_BASE_URL}/tables/${updatedTable.id}`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(updatedTable),
+    signal,
+  };
+  return await fetchJson(url, options)
+}
+
+//delete a table
+
+export async function deleteTable(tableId, signal) {
+  const url = `${API_BASE_URL}/tables/${tableId}`;
+  const options = { method: "DELETE", signal };
+  return await fetchJson(url, options);
+}
+
+//seat a party at a table
+
+export async function seatTable(tableId, updatedTable, signal) {
+  const url = `${API_BASE_URL}/tables/${tableId}/seat`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(updatedTable),
+    signal,
+  };
+  return await fetchJson(url, options)
+}
+
+export async function freeTable(tableId, signal) {
+  const url = `${API_BASE_URL}/tables/${tableId}/seat`;
+  const options = { method: "DELETE", signal };
+  return await fetchJson(url, options);
+}

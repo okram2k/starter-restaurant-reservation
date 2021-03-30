@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { readByDate } from "../utils/api";
+import { readByDate, listTables, freeTable, statusUpdate } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { Link, useParams, useHistory } from "react-router-dom";
 import { today, previous, next } from "../utils/date-time";
+import ReservationList from "./ReservationList"
+import TablesList from "./TablesList"
 
 /**
  * Defines the dashboard page.
@@ -18,6 +20,7 @@ function Dashboard({ date }) {
   console.log(params.date, date)
   let isDate = new Date(date);
   const [reservations, setReservations] = useState([]);
+  const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
   useEffect(loadDashboard, [date]);
@@ -29,20 +32,50 @@ function Dashboard({ date }) {
     readByDate( reservation_date, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
+    listTables(abortController.signal)
+        .then(setTables)
+        .catch(setReservationsError);
     
     return () => abortController.abort();
 
   }
-  //console.log(date, reservations);
-  if (reservations.length > 0){
+  const handleFinish = async ({ target }) => {
+    const abortController = new AbortController();
+    const value=target.value;
+    console.log(value);
+    const result = window.confirm(`Is this table ready to seat new guests? This cannot be undone.`);
+    if (result) {
+      async function deleteData() {
+         try {
+          const activeTable = tables.filter((table) => table.table_id == value)
+          await freeTable(value);
+          console.log(activeTable[0].reservation_id);
+          await statusUpdate(activeTable[0].reservation_id, {status: "Finished"}, abortController.signal);
+          const output = await listTables();
+          const output2 = await readByDate(date)
+          setTables(output);
+          setReservations(output2);
+         
+        } catch (error) {
+          if (error.name === "AbortError") {
+            // Ignore `AbortError`
+            console.log("Aborted");
+        } else {
+            throw error;
+        }
+      }
+    }
+    deleteData();
+    }
+  };
+  //console.log(tables);
     
     //console.log(output, date);
   return (
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for {isDate.toDateString()}</h4> <br />
-        
+        <h4 className="mb-0">Reservations for {date}</h4> <br />
         
       </div>
       <div>
@@ -51,45 +84,18 @@ function Dashboard({ date }) {
           <Link to={`/dashboard/`} className="btn btn-success">Today</Link>
       </div>
       <br />
-      <div className="row">
-        {reservations.map((reservation)=>(
-          <div className="col-sm-6">
-            <div className="card text-white bg-dark mb-3">
-              <div className="card-header">{reservation.reservation_time}</div>
-              <div className="card-body">
-                <h5 className="card-title">{reservation.first_name} {reservation.last_name}</h5>
-                <p className="card-text">
-                  date: {reservation.reservation_date} <br />
-                  Mobile Number: {reservation.mobile_number}<br />
-                  Party Size: {reservation.people}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div>
+        <ReservationList reservations={reservations} />
+      </div>
+      <h4 className="mb-0">Tables:</h4> <br />
+      <div>
+        <TablesList tables={tables} handleFinish={handleFinish} />
       </div>
       <ErrorAlert error={reservationsError} />
     </main>
   );
-  } else {
-    return (
-      <main>
-      <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for {isDate.toDateString()}</h4> <br />
-        
-        
-      </div>
-      <div>
-          <Link to={`/dashboard/${previous(date)}`} className="btn btn-dark">Previous</Link> &nbsp;
-          <Link to={`/dashboard/${next(date)}`} className="btn btn-dark">Next</Link> &nbsp;
-          <Link to={`/dashboard/`} className="btn btn-success">Today</Link>
-      </div>
-      <br />
-      No Reservations for this date.
-      </main>
-    )
-  }
+    
+  
 }
 
 export default Dashboard;

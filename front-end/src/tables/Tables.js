@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
-import ErrorAlert from "../layout/ErrorAlert";
+import { Link, useParams, useHistory } from "react-router-dom";
+import { createTable } from "../utils/api";
+import TablesForm from "./TablesForm"
 
 /**
  * Defines the dashboard page.
@@ -9,28 +10,63 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function Tables({ date }) {
-  const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  const initialFormState = {
+    table_name: " ",
+    capacity: 1,
+    status: "Free"
+  };
+  const [formData, setFormData] = useState({ ...initialFormState });
+  const abortController = new AbortController();
+  const history = useHistory();
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
+    console.log("Submitted:", formData);
+    async function updateData() {
+       try {
+        await createTable(formData, abortController.signal);
+        console.log("updated");
+        //history.push(`/reservations?date=${formData.reservation_date}`);
+      } catch (error) {
+        if (error.name === "AbortError") {
+          // Ignore `AbortError`
+          console.log("Aborted");
+      } else {
+          throw error;
+        }
+      }
+    }
+    updateData();
+    return () => {
+      console.log("post cleanup");
+      abortController.abort();
+    }
+  };
+  const handleChange = ({ target }) => {
+    let value = target.value;
 
-  useEffect(loadDashboard, [date]);
+    if (target.name == "capacity" && target.value <= 0){
+      value = 1;
+    }
+    setFormData({
+      ...formData,
+      [target.name]: value,
+    });
+  };
 
-  function loadDashboard() {
-    const abortController = new AbortController();
-    setReservationsError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
-    return () => abortController.abort();
-  }
+
+
 
   return (
     <main>
       <h1>Tables</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Tables</h4>
-      </div>
-      <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
+
+      
+      <form onSubmit={handleSubmit}>
+        <TablesForm formData={formData} handleChange={handleChange} />
+        <button type="button" onClick={() => history.goBack()} className="btn btn-secondary">Cancel</button> &nbsp;
+        <button type="submit" className="btn btn-primary">Save</button>
+        </form>
     </main>
   );
 }
