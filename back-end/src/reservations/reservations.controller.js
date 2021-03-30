@@ -79,9 +79,11 @@ async function destroy(req, res, next) {
   res.sendStatus(204);
 }
 
-async function list(req, res, next) {
+async function search(req, res, next) {
+  const { mobile_number } = req.query;
+  //console.log(req.query);
   const knexInstance = req.app.get("db");
-  let reservations = await service.list(knexInstance);
+  let reservations = await service.search(knexInstance, mobile_number);
   if (reservations instanceof Error) return next({ message: reservations.message });
   res.json({ data: reservations });
 }
@@ -127,7 +129,7 @@ module.exports = {
   update: [hasOnlyValidProperties, reservationExists, update],
   statusUpdate: [hasOnlyValidProperties, reservationExists, statusUpdate],
   destroy: [reservationExists, destroy],
-  list: [list],
+  search: [search],
   listByDate: [listByDate],
   read: [reservationExists, read],
 };

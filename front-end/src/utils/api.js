@@ -123,6 +123,12 @@ export async function readByDate(reservation_date, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+export async function searchByPhoneNumber(mobile_phone, signal) {
+  const url = `${API_BASE_URL}/reservations?mobile_number=${mobile_phone}`;
+  return await fetchJson(url, { signal })
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+}
 
 //update a reservation's status:
 

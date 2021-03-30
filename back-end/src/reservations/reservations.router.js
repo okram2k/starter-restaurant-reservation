@@ -9,7 +9,7 @@ const controller = require("./reservations.controller");
 const methodNotAllowed = require("../errors/methodNotAllowed");
 
 router.route("/")
-    .get(controller.list)
+    .get(controller.search)
     .post(controller.create)
     .all(methodNotAllowed);
 router.route("/byDate")

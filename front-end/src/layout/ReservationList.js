@@ -28,7 +28,7 @@ const ReservationList = ({reservations}) => {
     } else {
         return (
             <div class="alert alert-success" role="alert">
-                No pending reservations for this date
+                No matching reservations.
             </div>
         )
     }

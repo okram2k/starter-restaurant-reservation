@@ -3,7 +3,7 @@ import { readByDate, listTables, freeTable, statusUpdate } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { Link, useParams, useHistory } from "react-router-dom";
 import { today, previous, next } from "../utils/date-time";
-import ReservationList from "./ReservationList"
+import ReservationList from "../layout/ReservationList"
 import TablesList from "./TablesList"
 
 /**

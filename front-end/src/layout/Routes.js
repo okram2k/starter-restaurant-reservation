@@ -32,10 +32,13 @@ function Routes() {
         <Dashboard date={today()} />
       </Route>
       <Route path="/search">
-        <Search date={today()} />
+        <Search />
       </Route>
       <Route path="/reservations/:reservation_id/seat">
         <Seat />
+      </Route>
+      <Route path="/reservations/:reservation_id/edit">
+        <Reservations date={today()} />
       </Route>
       <Route path="/reservations/new">
         <Reservations date={today()} />
