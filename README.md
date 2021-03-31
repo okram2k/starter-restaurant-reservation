@@ -1,16 +1,10 @@
-# Capstone: Restaurant Reservation System
+# Capstone: Periodic Tables Restaurant Manager
 
-> You have been hired as a full stack developer at _Periodic Tables_, a startup that is creating a reservation system for fine dining restaurants.
-> The software is used only by restaurant personnel when a customer calls to request a reservation.
-> At this point, the customers will not access the system online.
+This application was made as part of my capstone project for Thinkful. It is a reservation and table manager to be used by a restaurant that allows for the tracking of reservations as well as seating them to tables and updating their progress.
 
-There are no user stories for deployment: it is expected that you will deploy the application to production after you finish a user story.
+## Live Application
 
-There are no user stories for logging: it is expected that you will add logging to the application with enough detail to help you diagnose issues in production.
-
-## Existing files
-
-This repository is set up as a monorepo, meaning that the frontend and backend projects are in one repository. This allows you to open both projects in the same editor.
+This application can be viewed and seen [here](www.here.com/).
 
 As you work through the user stories listed later in this document, you will be writing code that allows your frontend and backend applications to talk to each other. You will also write code to allow your controllers and services to connect to, and query, your PostgreSQL database via [Knex](http://knexjs.org/).
 
