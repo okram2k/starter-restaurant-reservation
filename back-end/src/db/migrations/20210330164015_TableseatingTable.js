@@ -5,11 +5,14 @@ exports.up = function(knex) {
         table.string("table_name");
         table.integer("capacity");
         table.integer("reservation_id");
-        table.string("status");
+        table.string("status").notNullable().defaultTo('Free');
         table.timestamps(true, true);
+        
     });
 };
 
 exports.down = function(knex) {
     return knex.schema.dropTable("tableseating");
 };
+
+

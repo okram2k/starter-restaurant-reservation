@@ -35,14 +35,21 @@ function hasOnlyValidProperties(req, res, next) {
 function dataValidation(req,res,next){
   const data = {} = req.body;
   //console.log(data);
-  let isDate = new Date(data.reservation_date);
+  //add time stamp of last moment of the day to prevent time zone date mishaps
+  let adjusteDate =  data.reservation_date + " 23:59:59.999Z"
+  let inputDate = new Date(adjusteDate);
   let compareDate = new Date();
+  inputDate.setHours(0,0,0,0);
+  compareDate.setHours(0,0,0,0);
 
-  const error = {status: 400, message: "Invalid Reservation Data"}
-  if (data.people <=0) return next(error);
-  if (isDate < compareDate) return next(error);
-  if (isDate.getUTCDay() === 2) return next(error);
-  if (data.reservation_time < "10:30" || data.reservation_time > "21:30") return next(error);
+  const error = {status: 400, message: "Invalid Reservation Data"};
+  /*data validation, reject if there is 0 or less people in the party,
+  the reservation is made for a date in the past, the reservation is on a
+  Tuesday (UTCDay 2) or the reservation is not between 10:30am & 9:30 pm*/
+  if (data.people <=0) return next({status: 400, message: "Not enough people in the party"});
+  if (inputDate < compareDate) return next({status: 400, message: `Reservation cannot be made for a day in the past`});
+  if (inputDate.getUTCDay() === 2) return next({status: 400, message: "No Reservations on Tuesdays"});
+  if (data.reservation_time < "10:30" || data.reservation_time > "21:30") return next({status: 400, message: "Reservation must be between 10:30AM & 9:30PM"});
   next();
 }
 
@@ -97,8 +104,9 @@ async function destroy(req, res, next) {
 }
 
 async function search(req, res, next) {
-  const { mobile_number } = req.query;
+  let { mobile_number } = req.query;
   //console.log(req.query);
+  if (!mobile_number) mobile_number = "xxx-xxx-xxxx";
   const knexInstance = req.app.get("db");
   let reservations = await service.search(knexInstance, mobile_number);
   if (reservations instanceof Error) return next({ message: reservations.message });

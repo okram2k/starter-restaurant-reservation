@@ -11,7 +11,7 @@ import TablesForm from "./TablesForm"
  */
 function Tables({ date }) {
   const initialFormState = {
-    table_name: " ",
+    table_name: "",
     capacity: 1,
     status: "Free"
   };
@@ -26,7 +26,7 @@ function Tables({ date }) {
        try {
         await createTable(formData, abortController.signal);
         console.log("updated");
-        //history.push(`/reservations?date=${formData.reservation_date}`);
+        history.push(`/dashboard`);
       } catch (error) {
         if (error.name === "AbortError") {
           // Ignore `AbortError`

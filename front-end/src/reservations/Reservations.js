@@ -14,9 +14,9 @@ function Reservations({ date }) {
   const params = useParams();
   const reservation_id = params.reservation_id;
   const initialFormState = {
-    first_name: " ",
-    last_name: " ",
-    mobile_number: " ",
+    first_name: "",
+    last_name: "",
+    mobile_number: "",
     reservation_date: date,
     reservation_time: "10:30:00",
     people: 1
@@ -46,7 +46,7 @@ function Reservations({ date }) {
   }
   loadData();
 }
-});
+}, [reservation_id]);
   const abortController = new AbortController();
   const history = useHistory();
   const handleSubmit = (event) => {
