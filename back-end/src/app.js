@@ -12,13 +12,14 @@ const cors = require("cors");
 const errorHandler = require("./errors/errorHandler");
 const notFound = require("./errors/notFound");
 
-
 const app = express();
 
 app.set("db", knex);
 app.use(cors());
+
 app.use(express.json());
-//app.use(express.urlencoded());
+//enable pre-flight cors checks (hopefully)
+app.options('*', cors())
 
 app.use("/reservations", reservationsRouter);
 app.use("/tables", tablesRouter);

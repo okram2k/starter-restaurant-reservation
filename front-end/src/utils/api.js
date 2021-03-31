@@ -6,7 +6,7 @@ import formatReservationDate from "./format-reservation-date";
 import formatReservationTime from "./format-reservation-date";
 
 const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+  process.env.REACT_APP_API_BASE_URL || "https://restaurant-reservation-back-end.vercel.app";
 
 /**
  * Defines the default headers for these functions to work with `json-server`
@@ -68,7 +68,14 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
-//Adds a new reservation to the reservations table
+/**
+ * Creates a new reservation.
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to a possibly empty array of the new reservation from the database
+ */
+
 
 export async function createReservation(reservation, signal) {
   const url = `${API_BASE_URL}/reservations/`;
@@ -82,7 +89,16 @@ export async function createReservation(reservation, signal) {
   return await fetchJson(url, options);
 }
 
-//retreieve a single reservation with a specified id property
+/**
+ * Retrieves a single reservatio with a reservationId
+ * @param reservationId
+ * The reservation Id for the reservation
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to a possibly empty array of reservation saved in the database.
+ */
+
 
 export async function readReservation(reservationId, signal) {
   const url = `${API_BASE_URL}/reservations/${reservationId}`;
@@ -91,8 +107,15 @@ export async function readReservation(reservationId, signal) {
     .then(formatReservationTime);
 }
 
-
-//updates a single reservation
+/**
+ * Update a single reservatio with a reservationId
+ * @param updatedReservation
+ * An object of the updatedReservation, including the reservation_id
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to a possibly empty array of reservation saved in the database.
+ */
 
 export async function updateReservation(updatedReservation, signal) {
   const url = `${API_BASE_URL}/reservations/${updatedReservation.reservation_id}`;
@@ -107,7 +130,15 @@ export async function updateReservation(updatedReservation, signal) {
     .then(formatReservationTime);
 }
 
-//deletes a reservation
+/**
+ * Delete a single reservatio with a reservationId
+ * @param reservationId
+ * The reservation Id for the reservation
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to a possibly empty array of reservation saved in the database.
+ */
 
 export async function deleteReservation(reservationId, signal) {
   const url = `${API_BASE_URL}/reservations/${reservationId}`;
@@ -115,7 +146,15 @@ export async function deleteReservation(reservationId, signal) {
   return await fetchJson(url, options);
 }
 
-//list all reservations for a single date:
+/**
+ * Retrieves all reservations of a certain date.
+ * @param reservation_date
+ * A date in YYYY-MM-DD format
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to a possibly empty array of reservation saved in the database.
+ */
 
 export async function readByDate(reservation_date, signal) {
   const url = `${API_BASE_URL}/reservations/ByDate?reservation_date=${reservation_date}`;
@@ -123,6 +162,19 @@ export async function readByDate(reservation_date, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+
+/**
+ * Retrieves all reservations of a certain phone number.
+ * @param mobile_phone
+ * A phone number to search. The number will be stripped of all non numerical digits
+ * and return soft partial matches. Searching with no number or a non-numerical search will
+ * return all reservations in the database
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to a possibly empty array of reservation saved in the database.
+ */
+
 export async function searchByPhoneNumber(mobile_phone, signal) {
   const url = `${API_BASE_URL}/reservations?mobile_number=${mobile_phone}`;
   return await fetchJson(url, { signal })
@@ -130,7 +182,17 @@ export async function searchByPhoneNumber(mobile_phone, signal) {
     .then(formatReservationTime);
 }
 
-//update a reservation's status:
+/**
+ * Updates the status of a reservation
+ * @param reservation_Id
+ * The reservation ID for the reservation
+ * @param status
+ * An object containing {status: "message"} that updates the status field of a reservation
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to a possibly empty array of reservation saved in the database.
+ */
 
 export async function statusUpdate(reservationId, status, signal) {
   const url = `${API_BASE_URL}/reservations/${reservationId}/status`;
@@ -145,16 +207,28 @@ export async function statusUpdate(reservationId, status, signal) {
     .then(formatReservationTime);
 }
 
-
-//list all tables
+/**
+ * List all tables.
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[tables]>}
+ *  a promise that resolves to a possibly empty array of all tables from the database
+ */
 
 export async function listTables(signal) {
   const url = new URL(`${API_BASE_URL}/tables/`);
-  return await fetchJson(url, { headers, signal }, [])
+  return await fetchJson(url, { headers, signal }, []);
 }
 
-
-//add a table
+/**
+ * Add a new table to the database.
+ * @param newTable
+ * An object containing the data of the new table
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[tables]>}
+ *  a promise that resolves to a possibly empty array of all tables from the database
+ */
 
 export async function createTable(newTable, signal) {
   const url = `${API_BASE_URL}/tables/`;
@@ -168,20 +242,34 @@ export async function createTable(newTable, signal) {
   return await fetchJson(url, options);
 }
 
-//update a table
+/**
+ * Update a table to the database.
+ * @param updatedTable
+ * An object containing the data of the table to be updated, incloding the updatedTable.table_id
+ * @param signal
+ * An optional abort signal
+ * @returns {Promise<[tables]>}
+ *  a promise that resolves to a possibly empty array of all tables from the database
+ */
 
 export async function updateTable(updatedTable, signal) {
-  const url = `${API_BASE_URL}/tables/${updatedTable.id}`;
+  const url = `${API_BASE_URL}/tables/${updatedTable.table_id}`;
   const options = {
     method: "PUT",
     headers,
     body: JSON.stringify(updatedTable),
     signal,
   };
-  return await fetchJson(url, options)
+  return await fetchJson(url, options);
 }
 
-//delete a table
+/**
+ * Delete a table from the database.
+ * @param tableId
+ * The table_id for the table
+ * @param signal
+ * An optional abort signal
+ */
 
 export async function deleteTable(tableId, signal) {
   const url = `${API_BASE_URL}/tables/${tableId}`;
@@ -189,7 +277,13 @@ export async function deleteTable(tableId, signal) {
   return await fetchJson(url, options);
 }
 
-//seat a party at a table
+/**
+ * Occupy a table in the database.
+ * @param tableId
+ * The table_id for the table to be unseated. It's status field will be changed to "Occupied"
+ * @param signal
+ * An optional abort signal
+ */
 
 export async function seatTable(tableId, updatedTable, signal) {
   const url = `${API_BASE_URL}/tables/${tableId}/seat`;
@@ -199,8 +293,16 @@ export async function seatTable(tableId, updatedTable, signal) {
     body: JSON.stringify(updatedTable),
     signal,
   };
-  return await fetchJson(url, options)
+  return await fetchJson(url, options);
 }
+
+/**
+ * Unoccupy a table in the database.
+ * @param tableId
+ * The table_id for the table to be unseated. It's status field will be changed to "Free"
+ * @param signal
+ * An optional abort signal
+ */
 
 export async function freeTable(tableId, signal) {
   const url = `${API_BASE_URL}/tables/${tableId}/seat`;

@@ -1,51 +1,48 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createTable } from "../utils/api";
-import TablesForm from "./TablesForm"
+import TablesForm from "./TablesForm";
 
 /**
- * Defines the dashboard page.
- * @param date
- *  the date for which the user wants to view reservations.
- * @returns {JSX.Element}
+ * Defines the tables page.
+ * This page allows the creaiton of a new table. After adding a table it returns the user to the dashboard.
  */
-function Tables({ date }) {
+function Tables() {
+  //default a table_name of "Table Name", capacity of 1, and status "free" as a new table can't be occupied.
   const initialFormState = {
-    table_name: "",
+    table_name: "Table Name",
     capacity: 1,
-    status: "Free"
+    status: "Free",
   };
   const [formData, setFormData] = useState({ ...initialFormState });
   const abortController = new AbortController();
   const history = useHistory();
+  //upon submission, add table to the databse then return to the dashboard.
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    console.log("Submitted:", formData);
+
     async function updateData() {
-       try {
+      try {
         await createTable(formData, abortController.signal);
-        console.log("updated");
         history.push(`/dashboard`);
       } catch (error) {
         if (error.name === "AbortError") {
           // Ignore `AbortError`
           console.log("Aborted");
-      } else {
+        } else {
           throw error;
         }
       }
     }
     updateData();
     return () => {
-      console.log("post cleanup");
       abortController.abort();
-    }
+    };
   };
   const handleChange = ({ target }) => {
     let value = target.value;
 
-    if (target.name === "capacity" && target.value <= 0){
+    if (target.name === "capacity" && target.value <= 0) {
       value = 1;
     }
     setFormData({
@@ -54,19 +51,24 @@ function Tables({ date }) {
     });
   };
 
-
-
-
   return (
     <main>
       <h1>Tables</h1>
 
-      
       <form onSubmit={handleSubmit}>
         <TablesForm formData={formData} handleChange={handleChange} />
-        <button type="button" onClick={() => history.goBack()} className="btn btn-secondary">Cancel</button> &nbsp;
-        <button type="submit" className="btn btn-primary">Save</button>
-        </form>
+        <button
+          type="button"
+          onClick={() => history.goBack()}
+          className="btn btn-secondary"
+        >
+          Cancel
+        </button>{" "}
+        &nbsp;
+        <button type="submit" className="btn btn-primary">
+          Save
+        </button>
+      </form>
     </main>
   );
 }

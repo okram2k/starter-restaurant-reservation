@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/layout/Layout.css"],"names":[],"mappings":"AAAA,UACE,wBAAyB,CACzB,eACF","file":"main.04eaccfd.chunk.css","sourcesContent":[".side-bar {\r\n  background-color: #393a44;\r\n  min-width: 200px;\r\n}\r\n"]}
