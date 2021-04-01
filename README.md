@@ -28,10 +28,10 @@ The table below describes the paths and usage of the API:
 
 ### Application Usage:
 
-The Restaurant Reservation Application has four main page. The Dashboard, the Search Page, New Reservation, and New Table
+The Restaurant Reservation Application has four main page branches. The Dashboard, the Search Page, New Reservation, and New Table
 
 ![The Dashboard](https://i.imgur.com/Kwen4CK.png)
-The Dashboard allows a user to view the status of all tables in the restaurant as well as a list of all pending reservations for today's date. Reservations that are a status of "Finished" or "Cancelled" will not be displayed. Cancelling a reservation cannot be reserved and a warning message pops up before cancelling. Previous and Next buttons allow navigation to other dates while the Today button brings the user back to today's date. On each Reservation are the options to Seat, Edit or Cancel if the reservation has not already been seated. An occupied table will have an option to "Finish" Which will free the table and set the corresponding reservation to "Finished". Finishing a table cannot be reversed and a warning message pops up before it is completed.
+The Dashboard allows a user to view the status of all tables in the restaurant as well as a list of all pending reservations for the selected date. Reservations that are a status of "Finished" or "Cancelled" will not be displayed. Cancelling a reservation cannot be reversed and a warning message pops up before cancelling. Previous and Next buttons allow navigation to other dates while the Today button brings the user back to today's date. On each Reservation are the options to Seat, Edit or Cancel if the reservation has not already been seated. An occupied table will have an option to "Finish" Which will free the table and set the corresponding reservation to "Finished". Finishing a table cannot be reversed and a warning message pops up before it is completed.
 
 ![Seat Party](https://i.imgur.com/JfGWEB6.png)
 After clicking on the Seat Party button a user has the option to seat the party at a table. Tables are listed in alphabetical order in the drop-down menu on the right. If the table is not large enough for the party an error message will appear at the top of the screen and the user will be prevented from saving the assignment. Cancelling returns the user back to the dashboard.
