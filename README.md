@@ -14,7 +14,7 @@ Both are hosted on [Vercel](https://vercel.com/home) with the SQL Database hoste
 
 The `./back-end` folder contains all the code for the backend project.
 
-The table below describes the existing files in the `./back-end` folder:
+The table below describes the paths and usage of the API:
 
 | API path                                                 | Function                                                                                                            |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
