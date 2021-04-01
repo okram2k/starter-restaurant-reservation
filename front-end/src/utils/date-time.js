@@ -49,18 +49,30 @@ export function today() {
   return asDateString(new Date());
 }
 
+//the previous and next day code did not work for months with 31 days.
+//I wouldn't have discovered this had I not been working on and around 3/31
+//After some research I have replaced the functions with one that DOES.
+
 /**
  * Subtracts one day to the specified date and return it in as YYYY-MM-DD.
  * @param currentDate
  *  a date string in YYYY-MM-DD format (this is also ISO-8601 format)
  * @returns {*}
  *  the date one day prior to currentDate, formatted as YYYY-MM-DD
- */
+ 
 export function previous(currentDate) {
   const date = new Date(...currentDate.split("-"));
   date.setMonth(date.getMonth() - 1);
   date.setDate(date.getDate() - 1);
   return asDateString(date);
+}
+*/
+
+export function previous(currentDate) {
+  const date = new Date(currentDate+"T00:00:00");
+  const next_date = new Date(date.getTime() - 24*60*60*1000);
+  console.log(currentDate, date, next_date)
+  return asDateString(next_date);
 }
 
 /**
@@ -69,10 +81,18 @@ export function previous(currentDate) {
  *  a date string in YYYY-MM-DD format (this is also ISO-8601 format)
  * @returns {*}
  *  the date one day after currentDate, formatted as YYYY-MM-DD
- */
+ 
 export function next(currentDate) {
   const date = new Date(...currentDate.split("-"));
   date.setMonth(date.getMonth() - 1);
   date.setDate(date.getDate() + 1);
   return asDateString(date);
+}
+*/
+
+export function next(currentDate) {
+  const date = new Date(currentDate+"T00:00:00");
+  const next_date = new Date(date.getTime() + 24*60*60*1000);
+  console.log(currentDate, date, next_date)
+  return asDateString(next_date);
 }
