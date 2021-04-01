@@ -64,6 +64,8 @@ The back-end of this project was built using Node.js, Knex, and Postgres. Utiliz
 1. Run `npm install` to install project dependencies.
 1. Run `npm run start:dev` to start your server in development mode.
 
+An optimized front-end is already built and available in front-end/RRBuild
+
 If you have trouble getting the server to run, reach out for assistance.
 
 ## Version 2.0
